@@ -1,10 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://vgkjimyi0g8e"]
+[gd_scene load_steps=15 format=3 uid="uid://vgkjimyi0g8e"]
 
 [ext_resource type="Texture2D" uid="uid://6dtx1lrrji1" path="res://Scenes/basic_human/tile_0085.png" id="1_80vqw"]
 [ext_resource type="Script" path="res://Scenes/basic_human/basic_human.gd" id="1_hbm8j"]
 [ext_resource type="PackedScene" uid="uid://du8ix8fdiq4g0" path="res://Scenes/tool/axe/axe.tscn" id="3_ab654"]
 [ext_resource type="Script" path="res://StateMachine/StateMachine.gd" id="4_ewqsj"]
-[ext_resource type="Script" path="res://StateMachine/States/idle_state.gd" id="5_kj7gd"]
+[ext_resource type="Script" path="res://StateMachine/States/IdleState.gd" id="5_2m3jj"]
+[ext_resource type="Script" path="res://StateMachine/States/WorkState.gd" id="6_80wju"]
+[ext_resource type="Script" path="res://StateMachine/States/SleepState.gd" id="7_d4c2g"]
+[ext_resource type="Script" path="res://Scenes/basic_human/human_wheel_tool/Walk.gd" id="8_jr3v6"]
+[ext_resource type="Script" path="res://StateMachine/States/FightState.gd" id="8_xxj7p"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gom5n"]
 radius = 6.0
@@ -46,8 +50,13 @@ _data = {
 "walk": SubResource("Animation_43lqi")
 }
 
+[sub_resource type="LabelSettings" id="LabelSettings_cm1v6"]
+font_size = 8
+
 [node name="basic_human" type="CharacterBody2D" groups=["human"]]
 collision_layer = 0
+motion_mode = 1
+wall_min_slide_angle = 0.0
 script = ExtResource("1_hbm8j")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -68,6 +77,32 @@ libraries = {
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_ewqsj")
+initial_state = "IdleState"
 
 [node name="IdleState" type="Node" parent="StateMachine"]
-script = ExtResource("5_kj7gd")
+script = ExtResource("5_2m3jj")
+
+[node name="BuildBaseState" type="Node" parent="StateMachine"]
+script = ExtResource("6_80wju")
+
+[node name="SleepState" type="Node" parent="StateMachine"]
+script = ExtResource("7_d4c2g")
+
+[node name="FightState" type="Node" parent="StateMachine"]
+script = ExtResource("8_xxj7p")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -18.0
+offset_top = -47.0
+offset_right = 18.0
+offset_bottom = -24.0
+label_settings = SubResource("LabelSettings_cm1v6")
+
+[node name="Navigation" type="Node2D" parent="."]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Navigation"]
+
+[node name="WheelTool" type="Node" parent="."]
+
+[node name="Walk" type="Node" parent="WheelTool"]
+script = ExtResource("8_jr3v6")

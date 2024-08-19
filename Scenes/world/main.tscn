@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://cf0b311jhdjqw"]
 
 [ext_resource type="PackedScene" uid="uid://vgkjimyi0g8e" path="res://Scenes/basic_human/basic_human.tscn" id="1_ejgid"]
+[ext_resource type="Script" path="res://Scenes/world/main.gd" id="1_x44w3"]
 [ext_resource type="Texture2D" uid="uid://bylbw8mauqs2k" path="res://tilemap.png" id="2_ivur3"]
 [ext_resource type="Script" path="res://Scenes/world/Camera2D.gd" id="3_so3pd"]
-[ext_resource type="PackedScene" uid="uid://boaqge6g0yejw" path="res://Scenes/Buildings/base/base.tscn" id="4_xmhu3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pjb40"]
 texture = ExtResource("2_ivur3")
@@ -86,6 +86,7 @@ sources/0 = SubResource("TileSetAtlasSource_pjb40")
 
 [node name="Main" type="Node2D"]
 position = Vector2(379, 141)
+script = ExtResource("1_x44w3")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(237, 124)
@@ -100,10 +101,7 @@ layer_0/tile_data = PackedInt32Array(1245213, 65536, 2, 1179677, 65536, 2, 11141
 
 [node name="Building" type="Node" parent="."]
 
-[node name="Base" parent="Building" groups=["building"] instance=ExtResource("4_xmhu3")]
-position = Vector2(602, 274)
+[node name="Human" type="Node" parent="."]
 
-[node name="Node" type="Node" parent="."]
-
-[node name="basic_human" parent="Node" instance=ExtResource("1_ejgid")]
-position = Vector2(132, 157)
+[node name="basic_human" parent="Human" instance=ExtResource("1_ejgid")]
+position = Vector2(582, 331)
