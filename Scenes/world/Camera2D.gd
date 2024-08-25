@@ -1,13 +1,19 @@
 extends Camera2D
-
-const CAMERA_SPEED = 5
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	var camera_direction = Input.get_vector('camera_right','camera_left','camera_down','camera_up')
-	position -=camera_direction * CAMERA_SPEED
-	
+var pull = false
+var mousePos
+var currentPos
+func _physics_process(delta):
+	if Input.is_action_just_released("ScrollDown"):
+		if zoom.x >= 0.8 and zoom.y >= 0.8:
+			zoom.x -= 0.2
+			zoom.y -= 0.2
+	if Input.is_action_just_released("ScrollUp"):
+		if zoom.x <= 4 and zoom.y <= 4:
+			zoom.x += 0.2
+			zoom.y += 0.2
+	if Input.is_action_just_pressed("LMB"):
+		mousePos = get_global_mouse_position()
+	if Input.is_action_pressed("LMB"):
+		currentPos = get_global_mouse_position()
+		offset.x -= currentPos.x-mousePos.x
+		offset.y -= currentPos.y - mousePos.y

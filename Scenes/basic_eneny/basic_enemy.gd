@@ -10,9 +10,9 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	walk()
-	
+
 func walk():
-	var human := get_tree().get_nodes_in_group('human') 
+	var human := get_tree().get_nodes_in_group('human')
 	velocity = global_position.direction_to(human[0].global_position) * MAX_SPEED
 	move_and_slide()
 

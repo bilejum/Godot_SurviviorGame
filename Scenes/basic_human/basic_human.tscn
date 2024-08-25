@@ -1,14 +1,18 @@
-[gd_scene load_steps=15 format=3 uid="uid://vgkjimyi0g8e"]
+[gd_scene load_steps=23 format=3 uid="uid://vgkjimyi0g8e"]
 
-[ext_resource type="Texture2D" uid="uid://6dtx1lrrji1" path="res://Scenes/basic_human/tile_0085.png" id="1_80vqw"]
 [ext_resource type="Script" path="res://Scenes/basic_human/basic_human.gd" id="1_hbm8j"]
-[ext_resource type="PackedScene" uid="uid://du8ix8fdiq4g0" path="res://Scenes/tool/axe/axe.tscn" id="3_ab654"]
+[ext_resource type="Texture2D" uid="uid://x5yemfw8jrxg" path="res://Scenes/basic_human/medievalUnit_18.png" id="2_jts00"]
 [ext_resource type="Script" path="res://StateMachine/StateMachine.gd" id="4_ewqsj"]
 [ext_resource type="Script" path="res://StateMachine/States/IdleState.gd" id="5_2m3jj"]
 [ext_resource type="Script" path="res://StateMachine/States/WorkState.gd" id="6_80wju"]
 [ext_resource type="Script" path="res://StateMachine/States/SleepState.gd" id="7_d4c2g"]
-[ext_resource type="Script" path="res://Scenes/basic_human/human_wheel_tool/Walk.gd" id="8_jr3v6"]
 [ext_resource type="Script" path="res://StateMachine/States/FightState.gd" id="8_xxj7p"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="9_23bw5"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="9_o1a3s"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="10_1ajk7"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="11_7yygs"]
+[ext_resource type="Texture2D" uid="uid://c1gdbxu8rrqf" path="res://Scenes/basic_human/Bullet.png" id="13_b02sy"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="13_ic345"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gom5n"]
 radius = 6.0
@@ -18,14 +22,54 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
 "values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_khxk2"]
+resource_name = "attack_left_right"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.174533, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(5, 0), Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_43lqi"]
@@ -47,24 +91,32 @@ tracks/0/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qsnqb"]
 _data = {
 "RESET": SubResource("Animation_pyjes"),
+"attack_left_right": SubResource("Animation_khxk2"),
 "walk": SubResource("Animation_43lqi")
 }
 
 [sub_resource type="LabelSettings" id="LabelSettings_cm1v6"]
-font_size = 8
+font_size = 12
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2q8rh"]
+radius = 8.0
+height = 18.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ov7oo"]
+radius = 77.0065
+
+[sub_resource type="LabelSettings" id="LabelSettings_cfwsu"]
+font_size = 9
 
 [node name="basic_human" type="CharacterBody2D" groups=["human"]]
-collision_layer = 0
+collision_mask = 7
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_hbm8j")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_80vqw")
+texture = ExtResource("2_jts00")
 offset = Vector2(0, -7.43)
-
-[node name="Axe" parent="Sprite2D" instance=ExtResource("3_ab654")]
-position = Vector2(8, -2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -5)
@@ -77,7 +129,6 @@ libraries = {
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_ewqsj")
-initial_state = "IdleState"
 
 [node name="IdleState" type="Node" parent="StateMachine"]
 script = ExtResource("5_2m3jj")
@@ -91,18 +142,251 @@ script = ExtResource("7_d4c2g")
 [node name="FightState" type="Node" parent="StateMachine"]
 script = ExtResource("8_xxj7p")
 
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("9_23bw5")
+track_in_editor = true
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("DaliyActivitiesStates")
+
+[node name="DaliyActivitiesStates" type="Node" parent="StateChart/Root"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="StateChart/Root/DaliyActivitiesStates"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToBuildState" type="Node" parent="StateChart/Root/DaliyActivitiesStates/IdleState"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../WorkStates/BuildState")
+event = &"to build state"
+delay_in_seconds = "3.0
+"
+
+[node name="ToCopeTreeState" type="Node" parent="StateChart/Root/DaliyActivitiesStates/IdleState"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../WorkStates/CopeTreeState")
+event = &"to cope tree state"
+delay_in_seconds = "0.0"
+
+[node name="ToPickUpFood" type="Node" parent="StateChart/Root/DaliyActivitiesStates/IdleState"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../WorkStates/PickupFoodState")
+event = &"to pickup food state"
+delay_in_seconds = "0.0"
+
+[node name="WorkStates" type="Node" parent="StateChart/Root"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("BuildState")
+
+[node name="CopeTreeState" type="Node" parent="StateChart/Root/WorkStates"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("FindTree")
+
+[node name="FindTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToCopeTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState/FindTree"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../CopeTree")
+event = &"nav_finished"
+delay_in_seconds = "2.0"
+
+[node name="ToIdleState" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState/FindTree"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../../DaliyActivitiesStates/IdleState")
+event = &"to idle state"
+delay_in_seconds = "0.0"
+
+[node name="CopeTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToFindTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState/CopeTree"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../FindTree")
+event = &"cope_finished"
+delay_in_seconds = "1.0"
+
+[node name="ToClearInventory" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState/CopeTree"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../GoToVillage")
+event = &"go to village"
+delay_in_seconds = "0.0"
+
+[node name="BuildState" type="Node" parent="StateChart/Root/WorkStates"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("DetectPlace")
+
+[node name="DetectPlace" type="Node" parent="StateChart/Root/WorkStates/BuildState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToFindPlace" type="Node" parent="StateChart/Root/WorkStates/BuildState/DetectPlace"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../FindPlace")
+event = &"to find place"
+delay_in_seconds = "3.0"
+
+[node name="ToBuild" type="Node" parent="StateChart/Root/WorkStates/BuildState/DetectPlace"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../Build")
+event = &"to build"
+delay_in_seconds = "0.0"
+
+[node name="FindPlace" type="Node" parent="StateChart/Root/WorkStates/BuildState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToDetectPlace" type="Node" parent="StateChart/Root/WorkStates/BuildState/FindPlace"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../DetectPlace")
+event = &"to detect place"
+delay_in_seconds = "3.0"
+
+[node name="ToBuild" type="Node" parent="StateChart/Root/WorkStates/BuildState/FindPlace"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../Build")
+event = &"to build"
+delay_in_seconds = "0.0"
+
+[node name="Build" type="Node" parent="StateChart/Root/WorkStates/BuildState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToIdleState" type="Node" parent="StateChart/Root/WorkStates/BuildState/Build"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../../DaliyActivitiesStates/IdleState")
+event = &"to idle state"
+delay_in_seconds = "0.0"
+
+[node name="PickupFoodState" type="Node" parent="StateChart/Root/WorkStates"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("FindFood")
+
+[node name="FindFood" type="Node" parent="StateChart/Root/WorkStates/PickupFoodState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToPickupFood" type="Node" parent="StateChart/Root/WorkStates/PickupFoodState/FindFood"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../PickupFood")
+event = &"nav_finished"
+delay_in_seconds = "2.0"
+
+[node name="ToIdleState" type="Node" parent="StateChart/Root/WorkStates/PickupFoodState/FindFood"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../../DaliyActivitiesStates/IdleState")
+event = &"to idle state"
+delay_in_seconds = "0.0"
+
+[node name="PickupFood" type="Node" parent="StateChart/Root/WorkStates/PickupFoodState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToFindFood" type="Node" parent="StateChart/Root/WorkStates/PickupFoodState/PickupFood"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../FindFood")
+event = &"pickup_finished"
+delay_in_seconds = "1.0"
+
+[node name="ToClearInventory" type="Node" parent="StateChart/Root/WorkStates/PickupFoodState/PickupFood"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../GoToVillage")
+event = &"go to village"
+delay_in_seconds = "0.0"
+
+[node name="GoToVillage" type="Node" parent="StateChart/Root/WorkStates"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToClearInventory" type="Node" parent="StateChart/Root/WorkStates/GoToVillage"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../ClearInventory")
+event = &"nav_finished"
+delay_in_seconds = "0.0"
+
+[node name="ClearInventory" type="Node" parent="StateChart/Root/WorkStates"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToIdleState" type="Node" parent="StateChart/Root/WorkStates/ClearInventory"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../../DaliyActivitiesStates/IdleState")
+event = &"to idle state"
+delay_in_seconds = "0.0"
+
 [node name="Label" type="Label" parent="."]
-offset_left = -18.0
-offset_top = -47.0
-offset_right = 18.0
-offset_bottom = -24.0
+offset_left = -58.0
+offset_top = -17.0
+offset_right = -22.0
+offset_bottom = 6.0
 label_settings = SubResource("LabelSettings_cm1v6")
 
 [node name="Navigation" type="Node2D" parent="."]
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="Navigation"]
+avoidance_enabled = true
+neighbor_distance = 100.0
+max_speed = 50.0
 
-[node name="WheelTool" type="Node" parent="."]
+[node name="NavTimer" type="Timer" parent="Navigation"]
+wait_time = 0.1
+autostart = true
 
-[node name="Walk" type="Node" parent="WheelTool"]
-script = ExtResource("8_jr3v6")
+[node name="MouseEnteredDetect" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MouseEnteredDetect"]
+position = Vector2(0, -7)
+shape = SubResource("CapsuleShape2D_2q8rh")
+
+[node name="BuildDetect" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildDetect"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_ov7oo")
+
+[node name="StateChartDebugger" parent="." instance=ExtResource("13_ic345")]
+offset_left = 34.0
+offset_top = -68.0
+offset_right = 188.0
+offset_bottom = 42.0
+enabled = false
+initial_node_to_watch = NodePath("../StateChart")
+maximum_lines = 100
+
+[node name="PanelContainer" type="Panel" parent="."]
+offset_left = -12.0
+offset_top = -28.0
+offset_right = 12.0
+offset_bottom = -19.0
+
+[node name="EnergyShowup" type="Sprite2D" parent="PanelContainer"]
+position = Vector2(7, 5)
+scale = Vector2(0.59375, 0.71875)
+texture = ExtResource("13_b02sy")
+region_enabled = true
+region_rect = Rect2(16, 16, 16, 16)
+
+[node name="Label" type="Label" parent="PanelContainer"]
+layout_mode = 2
+offset_left = 10.0
+offset_top = -2.0
+offset_right = 34.0
+offset_bottom = 21.0
+text = "  0"
+label_settings = SubResource("LabelSettings_cfwsu")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="state_entered" from="StateChart/Root/DaliyActivitiesStates/IdleState" to="." method="_on_idle_state_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/CopeTreeState/FindTree" to="." method="_on_find_tree_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/CopeTreeState/CopeTree" to="." method="_on_cope_tree_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/BuildState/DetectPlace" to="." method="_on_detect_place_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/BuildState/FindPlace" to="." method="_on_find_place_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/BuildState/Build" to="." method="_on_build_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/PickupFoodState/FindFood" to="." method="_on_find_food_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/PickupFoodState/PickupFood" to="." method="_on_pickup_food_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/GoToVillage" to="." method="_on_go_to_village_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/ClearInventory" to="." method="_on_clear_inventory_state_entered"]
+[connection signal="velocity_computed" from="Navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
+[connection signal="timeout" from="Navigation/NavTimer" to="." method="_on_nav_timer_timeout"]
+[connection signal="mouse_entered" from="MouseEnteredDetect" to="." method="_on_mouse_entered_mouse_entered"]
+[connection signal="mouse_exited" from="MouseEnteredDetect" to="." method="_on_mouse_entered_mouse_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

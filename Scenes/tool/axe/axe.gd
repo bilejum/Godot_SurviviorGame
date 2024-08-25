@@ -16,3 +16,8 @@ func swing():
 
 
 
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body is CharacterBody2D and body.current_village != self.get_parent().get_parent().current_village:
+		body.health -=1
