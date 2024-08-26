@@ -1,0 +1,122 @@
+[gd_scene load_steps=8 format=3 uid="uid://boaqge6g0yejw"]
+
+[ext_resource type="Script" path="res://Scenes/Buildings/village_base/village_base.gd" id="1_fxopr"]
+[ext_resource type="Texture2D" uid="uid://dkgpaimsensg6" path="res://Scenes/Buildings/village_base/Free_Chicken_House.png" id="1_hjj7u"]
+[ext_resource type="Texture2D" uid="uid://blc6r5o7anwio" path="res://Scenes/Buildings/village_base/head_icon.png" id="3_8kjn1"]
+[ext_resource type="Texture2D" uid="uid://ygbosqce25oe" path="res://Scenes/Buildings/village_base/Basic_Grass_Biom_things.png" id="3_r46dm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_flspv"]
+size = Vector2(38, 47)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smkqw"]
+size = Vector2(46, 57)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5aq2u"]
+font_size = 15
+
+[node name="VillageBase" type="StaticBody2D"]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_fxopr")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_hjj7u")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_flspv")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -94.0
+offset_top = -12.0
+offset_right = -54.0
+offset_bottom = 11.0
+
+[node name="SpawnVillager" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[node name="MouseEntered" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MouseEntered"]
+position = Vector2(1, -0.5)
+shape = SubResource("RectangleShape2D_smkqw")
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+radius = 35.0
+
+[node name="PanelContainer" type="Panel" parent="."]
+offset_left = -46.0
+offset_top = -53.0
+offset_right = 42.0
+offset_bottom = -30.0
+
+[node name="head_icon" type="Sprite2D" parent="PanelContainer"]
+position = Vector2(8, 11)
+texture = ExtResource("3_8kjn1")
+region_enabled = true
+region_rect = Rect2(195, 34, 11, 13)
+
+[node name="food" type="Sprite2D" parent="PanelContainer"]
+position = Vector2(67, 11)
+scale = Vector2(1.4375, 1.3125)
+texture = ExtResource("3_r46dm")
+region_enabled = true
+region_rect = Rect2(16, 32, 16, 16)
+
+[node name="wood" type="Sprite2D" parent="PanelContainer"]
+position = Vector2(37, 11)
+texture = ExtResource("3_r46dm")
+region_enabled = true
+region_rect = Rect2(80, 32, 16, 16)
+
+[node name="woodlabel" type="Label" parent="PanelContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_right = 30.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "  0"
+label_settings = SubResource("LabelSettings_5aq2u")
+
+[node name="foodLabel" type="Label" parent="PanelContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 28.0
+offset_top = -11.5
+offset_right = 58.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "  0"
+label_settings = SubResource("LabelSettings_5aq2u")
+
+[node name="PopuLabel" type="Label" parent="PanelContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -11.5
+offset_right = -2.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "  0"
+label_settings = SubResource("LabelSettings_5aq2u")
+
+[connection signal="timeout" from="SpawnVillager" to="." method="_on_spawn_villager_timeout"]
+[connection signal="mouse_entered" from="MouseEntered" to="." method="_on_mouse_entered_mouse_entered"]
+[connection signal="mouse_exited" from="MouseEntered" to="." method="_on_mouse_entered_mouse_exited"]

@@ -1,0 +1,229 @@
+[gd_scene load_steps=20 format=3 uid="uid://vgkjimyi0g8e"]
+
+[ext_resource type="Texture2D" uid="uid://6dtx1lrrji1" path="res://Scenes/basic_human/tile_0085.png" id="1_80vqw"]
+[ext_resource type="Script" path="res://Scenes/basic_human/basic_human.gd" id="1_hbm8j"]
+[ext_resource type="Script" path="res://StateMachine/StateMachine.gd" id="4_ewqsj"]
+[ext_resource type="Script" path="res://StateMachine/States/IdleState.gd" id="5_2m3jj"]
+[ext_resource type="Script" path="res://StateMachine/States/WorkState.gd" id="6_80wju"]
+[ext_resource type="Script" path="res://StateMachine/States/SleepState.gd" id="7_d4c2g"]
+[ext_resource type="Script" path="res://Scenes/basic_human/human_wheel_tool/Walk.gd" id="8_jr3v6"]
+[ext_resource type="Script" path="res://StateMachine/States/FightState.gd" id="8_xxj7p"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="9_23bw5"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="9_o1a3s"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="10_1ajk7"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="11_7yygs"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gom5n"]
+radius = 6.0
+
+[sub_resource type="Animation" id="Animation_pyjes"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_khxk2"]
+resource_name = "attack_left_right"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(5, 0), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.174533, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_43lqi"]
+resource_name = "walk"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 3
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.174533, 0.0, -0.174533, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qsnqb"]
+_data = {
+"RESET": SubResource("Animation_pyjes"),
+"attack_left_right": SubResource("Animation_khxk2"),
+"walk": SubResource("Animation_43lqi")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_cm1v6"]
+font_size = 8
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2q8rh"]
+radius = 8.0
+height = 18.0
+
+[node name="basic_human" type="CharacterBody2D" groups=["human"]]
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_hbm8j")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_80vqw")
+offset = Vector2(0, -7.43)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_gom5n")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qsnqb")
+}
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("4_ewqsj")
+
+[node name="IdleState" type="Node" parent="StateMachine"]
+script = ExtResource("5_2m3jj")
+
+[node name="BuildBaseState" type="Node" parent="StateMachine"]
+script = ExtResource("6_80wju")
+
+[node name="SleepState" type="Node" parent="StateMachine"]
+script = ExtResource("7_d4c2g")
+
+[node name="FightState" type="Node" parent="StateMachine"]
+script = ExtResource("8_xxj7p")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("9_23bw5")
+track_in_editor = true
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("WorkStates")
+
+[node name="DaliyActivitiesStates" type="Node" parent="StateChart/Root"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="StateChart/Root/DaliyActivitiesStates"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToSleep" type="Node" parent="StateChart/Root/DaliyActivitiesStates/IdleState"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../SleepState")
+event = &"energy_lacked"
+delay_in_seconds = "0.0"
+
+[node name="SleepState" type="Node" parent="StateChart/Root/DaliyActivitiesStates"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToIdle" type="Node" parent="StateChart/Root/DaliyActivitiesStates/SleepState"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../IdleState")
+delay_in_seconds = "0.0"
+
+[node name="WorkStates" type="Node" parent="StateChart/Root"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("CopeTreeState")
+
+[node name="CopeTreeState" type="Node" parent="StateChart/Root/WorkStates"]
+script = ExtResource("9_o1a3s")
+initial_state = NodePath("FindTree")
+
+[node name="FindTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToCopeTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState/FindTree"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../CopeTree")
+event = &"nav_finished"
+delay_in_seconds = "0.0"
+
+[node name="CopeTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState"]
+script = ExtResource("10_1ajk7")
+
+[node name="ToFindTree" type="Node" parent="StateChart/Root/WorkStates/CopeTreeState/CopeTree"]
+script = ExtResource("11_7yygs")
+to = NodePath("../../FindTree")
+event = &"cope_finished"
+delay_in_seconds = "0.0"
+
+[node name="Label" type="Label" parent="."]
+offset_left = -18.0
+offset_top = -47.0
+offset_right = 18.0
+offset_bottom = -24.0
+label_settings = SubResource("LabelSettings_cm1v6")
+
+[node name="Navigation" type="Node2D" parent="."]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Navigation"]
+target_desired_distance = 30.0
+avoidance_enabled = true
+neighbor_distance = 100.0
+max_speed = 50.0
+debug_enabled = true
+
+[node name="NavTimer" type="Timer" parent="Navigation"]
+wait_time = 0.1
+autostart = true
+
+[node name="WheelTool" type="Node" parent="."]
+
+[node name="Walk" type="Node" parent="WheelTool"]
+script = ExtResource("8_jr3v6")
+
+[node name="MouseEntered" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MouseEntered"]
+position = Vector2(0, -7)
+shape = SubResource("CapsuleShape2D_2q8rh")
+
+[connection signal="state_entered" from="StateChart/Root/DaliyActivitiesStates/IdleState" to="." method="_on_idle_state_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/CopeTreeState/FindTree" to="." method="_on_find_tree_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/WorkStates/CopeTreeState/CopeTree" to="." method="_on_cope_tree_state_entered"]
+[connection signal="velocity_computed" from="Navigation/NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
+[connection signal="timeout" from="Navigation/NavTimer" to="." method="_on_nav_timer_timeout"]
+[connection signal="mouse_entered" from="MouseEntered" to="." method="_on_mouse_entered_mouse_entered"]
+[connection signal="mouse_exited" from="MouseEntered" to="." method="_on_mouse_entered_mouse_exited"]

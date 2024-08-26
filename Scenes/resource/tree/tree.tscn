@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://bva12jx6fckwm"]
+
+[ext_resource type="Texture2D" uid="uid://ms78y5jonno5" path="res://Scenes/resource/tree/spr_deco_tree_01_strip4.png" id="1_nulbm"]
+[ext_resource type="Script" path="res://Scenes/resource/tree/tree.gd" id="1_qahht"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yxvmp"]
+radius = 4.0
+height = 12.0
+
+[node name="Tree" type="StaticBody2D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_qahht")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -8)
+texture = ExtResource("1_nulbm")
+region_enabled = true
+region_rect = Rect2(35, 0, 26, 34)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_yxvmp")
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+position = Vector2(0, -1)
+radius = 6.0

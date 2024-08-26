@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name Human
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var label: Label = $Label
 @onready var sprite_2d: Sprite2D = $Sprite2D
@@ -9,6 +10,8 @@ extends CharacterBody2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var timer: Timer = $Timer
 
+
+static var human_count := 0
 # 基本信息
 # ------------------------
 # 移动速度
@@ -41,18 +44,18 @@ var can_build = false
 var current_state = null
 
 var unit_job = null
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# 赋予角色名称
+	human_count +=1
 	human_name = generate_human_name()
 	world = get_parent().get_parent()
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 	label.visible = false
 func _process(delta: float) -> void:
 	# 走路
 	var direction = to_local(nav.get_next_path_position())
 	nav.velocity = direction * MAX_SPEED * delta
 	move_and_slide()
+
 	if target != null:
 		var target_position =target.global_position
 		if target_position.distance_to(self.global_position) < 48 or nav.is_target_reached():
@@ -121,13 +124,8 @@ func find_random_place(radius: float):
 func _on_idle_state_state_entered() -> void:
 	await get_tree().create_timer(1)
 	# 重置目标和速度
-	print('enter idle')
 	target = null
 	velocity = Vector2.ZERO
-
-
-	#if current_village !=null and energy <= 40:
-		#$StateChart.send_event('to sleep state')
 	# 如果没有村庄，就优先建一个村庄
 	if current_village == null:
 		$StateChart.send_event('to build state')
@@ -135,14 +133,15 @@ func _on_idle_state_state_entered() -> void:
 	#如果有村庄，就随机一个工作
 	elif unit_job == null:
 		var state_index = randi_range(0,2)
-		if state_index == 0:
-			$StateChart.send_event('to cope tree state')
+		match  state_index:
+			0:
+				$StateChart.send_event('to cope tree state')
 
-		if  state_index == 1:
-			$StateChart.send_event('to build state')
+			1:
+				$StateChart.send_event('to build state')
 
-		if state_index == 2:
-			$StateChart.send_event('to pickup food state')
+			2:
+				$StateChart.send_event('to pickup food state')
 	elif unit_job == 'farmer':
 		$StateChart.send_event('to pickup food state')
 

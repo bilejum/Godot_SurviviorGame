@@ -1,0 +1,77 @@
+[gd_scene load_steps=9 format=3 uid="uid://cb6v6jw73i0af"]
+
+[ext_resource type="Script" path="res://Scenes/Buildings/village_windmill/wheatfield/wheat_field.gd" id="1_g3hhd"]
+[ext_resource type="Texture2D" uid="uid://do7yc1lmyil5t" path="res://Scenes/Buildings/village_windmill/wheatfield/Wheatfield.png" id="1_jusbp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3f6ru"]
+atlas = ExtResource("1_jusbp")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_162fu"]
+atlas = ExtResource("1_jusbp")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hrf2o"]
+atlas = ExtResource("1_jusbp")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bprth"]
+atlas = ExtResource("1_jusbp")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_un4m6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3f6ru")
+}],
+"loop": false,
+"name": &"step1",
+"speed": 0.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_162fu")
+}],
+"loop": false,
+"name": &"step2",
+"speed": 0.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hrf2o")
+}],
+"loop": false,
+"name": &"step3",
+"speed": 0.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bprth")
+}],
+"loop": false,
+"name": &"step4",
+"speed": 0.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_n6jy6"]
+radius = 6.08276
+
+[node name="WheatField" type="StaticBody2D"]
+scale = Vector2(2, 2)
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_g3hhd")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_un4m6")
+animation = &"step4"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_n6jy6")
+
+[node name="GrowthTimer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[connection signal="timeout" from="GrowthTimer" to="." method="_on_growth_timer_timeout"]

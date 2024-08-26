@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://by2a40t7bjg2b"]
+
+[ext_resource type="Script" path="res://Scenes/Buildings/village_house/village_house.gd" id="1_7niyr"]
+[ext_resource type="Texture2D" uid="uid://b45mfm1wduof6" path="res://Scenes/Buildings/village_house/Houses.png" id="2_r4y60"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_aqdvx"]
+radius = 12.0
+
+[node name="VillageHouse" type="StaticBody2D"]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_7niyr")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -15)
+scale = Vector2(2, 2)
+texture = ExtResource("2_r4y60")
+region_enabled = true
+region_rect = Rect2(16, 32, 16, 16)
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+position = Vector2(0, -11)
+radius = 15.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -11)
+shape = SubResource("CircleShape2D_aqdvx")

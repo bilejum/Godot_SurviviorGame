@@ -1,0 +1,81 @@
+[gd_scene load_steps=9 format=3 uid="uid://div75i2h88khd"]
+
+[ext_resource type="Script" path="res://Scenes/Buildings/village_windmill/village_windmill.gd" id="1_dk5yc"]
+[ext_resource type="Texture2D" uid="uid://br15sq1g6j5av" path="res://Scenes/Buildings/village_windmill/windmill.png" id="1_m0fax"]
+[ext_resource type="PackedScene" uid="uid://cb6v6jw73i0af" path="res://Scenes/Buildings/village_windmill/wheatfield/wheat_field.tscn" id="2_cmys0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u0j2u"]
+atlas = ExtResource("1_m0fax")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_psphg"]
+atlas = ExtResource("1_m0fax")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hg8q4"]
+atlas = ExtResource("1_m0fax")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kx4e7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u0j2u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_psphg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hg8q4")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vqyr2"]
+radius = 11.0
+
+[node name="VillageWindmill" type="StaticBody2D"]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_dk5yc")
+
+[node name="WheatField8" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(26, -26)
+
+[node name="WheatField6" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(-26, -26)
+
+[node name="WheatField7" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(0, -26)
+
+[node name="WheatField" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(0, 23)
+
+[node name="WheatField4" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(-26, -3)
+
+[node name="WheatField5" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(26, -3)
+
+[node name="WheatField9" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(26, 23)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -5)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_kx4e7")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.0157033
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vqyr2")
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+position = Vector2(0, -1)
+radius = 15.0
+
+[node name="WheatField2" parent="." instance=ExtResource("2_cmys0")]
+position = Vector2(-26, 23)
