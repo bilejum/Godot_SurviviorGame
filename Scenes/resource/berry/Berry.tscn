@@ -19,3 +19,5 @@ shape = SubResource("CircleShape2D_farym")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
 radius = 8.0
+
+[connection signal="pick_up_berry" from="." to="." method="_on_pick_up_berry"]

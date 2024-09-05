@@ -18,6 +18,10 @@ static var human_count := 0
 const MAX_SPEED = 50
 # 当前村庄
 var current_village = null
+
+var current_kingdom = null
+
+var current_chunk = null
 # 名字
 var human_name : String
 # 生命值
@@ -46,15 +50,19 @@ var current_state = null
 var unit_job = null
 func _ready() -> void:
 	# 赋予角色名称
+	world = get_parent().get_parent()
 	human_count +=1
 	human_name = generate_human_name()
-	world = get_parent().get_parent()
 	label.visible = false
+
+
 func _process(delta: float) -> void:
 	# 走路
 	var direction = to_local(nav.get_next_path_position())
 	nav.velocity = direction * MAX_SPEED * delta
 	move_and_slide()
+
+
 
 	if target != null:
 		var target_position =target.global_position
@@ -122,34 +130,28 @@ func find_random_place(radius: float):
 
 # 进入Idle模式
 func _on_idle_state_state_entered() -> void:
-	await get_tree().create_timer(1)
+	print('enter idle state')
 	# 重置目标和速度
 	target = null
 	velocity = Vector2.ZERO
 	# 如果没有村庄，就优先建一个村庄
 	if current_village == null:
+		create_kingdom()
 		$StateChart.send_event('to build state')
 
-	#如果有村庄，就随机一个工作
-	elif unit_job == null:
-		var state_index = randi_range(0,2)
-		match  state_index:
-			0:
-				$StateChart.send_event('to cope tree state')
-
-			1:
-				$StateChart.send_event('to build state')
-
-			2:
-				$StateChart.send_event('to pickup food state')
-	elif unit_job == 'farmer':
-		$StateChart.send_event('to pickup food state')
-
+	match unit_job:
+		'gatherer':
+			$StateChart.send_event('to pickup food state')
+		'forester':
+			$StateChart.send_event('to cope tree state')
+		'builder':
+			$StateChart.send_event('to build state')
 
 # 进入FindTree状态
 func _on_find_tree_state_entered() -> void:
 	current_state = 'find'
-	var trees = world.trees
+	print('FindTree')
+	var trees = current_village.territory_tree
 	var closest_tree = null  # 初始化最近树的变量
 	var min_distance = 1000  # 初始化最小距离为无穷大
 
@@ -172,6 +174,7 @@ func _on_find_tree_state_entered() -> void:
 
 # 进入copeTree
 func _on_cope_tree_state_entered() -> void:
+	print('chop tree')
 	current_state = 'cope tree'
 	# 优先判断背包
 	if inventory_append('wood'): # 背包是否满检测
@@ -184,7 +187,7 @@ func _on_cope_tree_state_entered() -> void:
 	if target !=null:
 		if target.global_position.distance_to(self.global_position) < 50:
 			var tree = target
-			tree.health -=1
+			tree.take_damage.emit()
 			target = null
 
 
@@ -205,6 +208,7 @@ func _on_clear_inventory_state_entered() -> void:
 
 
 func _on_detect_place_state_entered() -> void:
+	print('enter detect')
 	if can_build == true and build_detect.get_overlapping_bodies().is_empty():
 		$StateChart.send_event('to build')
 	else :
@@ -212,6 +216,7 @@ func _on_detect_place_state_entered() -> void:
 
 
 func _on_find_place_state_entered() -> void:
+	print('enter find place')
 	if can_build == true and build_detect.get_overlapping_bodies().is_empty():
 		$StateChart.send_event('to build')
 
@@ -236,6 +241,8 @@ func _on_build_state_entered() -> void:
 		world.get_node('Building').add_child(new_village)
 		current_village = new_village
 		new_village.position = self.position + Vector2(16,16)
+		self.unit_job = 'gatherer'
+		current_village.unit_jobs_count[unit_job] +=1
 
 	else :
 		if is_instance_valid(building):
@@ -254,7 +261,7 @@ func _on_build_state_entered() -> void:
 func _on_find_food_state_entered() -> void:
 	print('zhao guo zi')
 	current_state = 'find'
-	var berrys = world.berrys
+	var berrys = current_village.territory_tree
 	var have_food_windmill_list = []
 	# 有食物才添加进采集可寻找数组
 	if unit_job == 'farmer':
@@ -273,6 +280,7 @@ func _on_find_food_state_entered() -> void:
 				min_distance = distance_to_player  # 更新最小距离
 				closest_berry = berry  # 更新最近树
 		else :
+			print('no found berry')
 			$StateChart.send_event('to idle state')
 
 	if closest_berry != null and is_instance_valid(closest_berry):
@@ -305,7 +313,7 @@ func _on_pickup_food_state_entered() -> void:
 					else :
 						$StateChart.send_event('to idle state')
 			else :
-				berry.health -=1
+				berry.pick_up_berry.emit()
 				target = null
 				if inventory_append('food'): # 背包是否满检测
 					$StateChart.send_event('go to village')
@@ -350,3 +358,6 @@ func _on_mouse_entered_mouse_entered() -> void:
 func _on_mouse_entered_mouse_exited() -> void:
 	sprite_2d.modulate = Color(1, 1, 1, 1)
 	label.visible = false
+
+func create_kingdom():
+	current_chunk.occupied.emit()

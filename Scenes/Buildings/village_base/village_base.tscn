@@ -117,6 +117,10 @@ grow_vertical = 2
 text = "  0"
 label_settings = SubResource("LabelSettings_5aq2u")
 
+[node name="DevelopmentTimer" type="Timer" parent="."]
+autostart = true
+
 [connection signal="timeout" from="SpawnVillager" to="." method="_on_spawn_villager_timeout"]
 [connection signal="mouse_entered" from="MouseEntered" to="." method="_on_mouse_entered_mouse_entered"]
 [connection signal="mouse_exited" from="MouseEntered" to="." method="_on_mouse_entered_mouse_exited"]
+[connection signal="timeout" from="DevelopmentTimer" to="." method="_on_development_timer_timeout"]

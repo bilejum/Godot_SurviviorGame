@@ -1,0 +1,55 @@
+[gd_scene load_steps=9 format=3 uid="uid://due1p7ku6gfi3"]
+
+[ext_resource type="Script" path="res://Scenes/world/proc_gen_world/proc_gen_world.gd" id="1_la1cj"]
+[ext_resource type="Texture2D" uid="uid://b6x4am1cjl771" path="res://Scenes/world/proc_gen_world/Grass.png" id="2_l5gdo"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_cp4vj"]
+vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_jl132"]
+vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_vjcrn"]
+vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_x5h5l"]
+vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qq2fy"]
+texture = ExtResource("2_l5gdo")
+1:0/0 = 0
+1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_cp4vj")
+2:0/0 = 0
+2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_jl132")
+3:0/0 = 0
+3:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_vjcrn")
+4:0/0 = 0
+4:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_x5h5l")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_5pwjo"]
+navigation_layer_0/layers = 1
+sources/0 = SubResource("TileSetAtlasSource_qq2fy")
+
+[node name="proc_gen_world" type="Node2D"]
+script = ExtResource("1_la1cj")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_5pwjo")
+format = 2

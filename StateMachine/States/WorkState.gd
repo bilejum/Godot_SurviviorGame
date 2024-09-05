@@ -88,4 +88,3 @@ func jugement() ->bool:
 			if player.current_village.building_list[0]=='VillageBase':
 				return true
 	return false
-
